@@ -13,40 +13,59 @@ class LoginController {
         $alertas = [];
 
         if($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // $usuario = new Usuario($_POST);
-            // echo 'Desde POST';
             $auth = new Usuario($_POST);
-
             $alertas = $auth->validarLogin();
 
             if(empty($alertas)) {
-                // echo 'El usuario proporcionó correo y contraseña';
-                //Comprovar que exista el usuario
+                // Comprobar que exista el usuario
                 $usuario = Usuario::buscarPorCampo('email', $auth->email);
 
                 if($usuario) {
-                    //Verificar contraseña
-                    $usuario->comprobarContrasenaAndVerificado($auth->password);
+                    // Verificar el password
+                    if( $usuario->comprobarContrasenaAndVerificado($auth->password) ) {
+                        // Autenticar el usuario
+                        session_start();
 
-                }else{
+                        $_SESSION['id'] = $usuario->id;
+                        $_SESSION['nombre'] = $usuario->nombre . " " . $usuario->apellido;
+                        $_SESSION['email'] = $usuario->email;
+                        $_SESSION['login'] = true;
+
+                        // Redireccionamiento
+                        if($usuario->admin === 1) {
+                            $_SESSION['admin'] = $usuario->admin ?? null;
+                            header('Location: /admin');
+                        } else {
+                            header('Location: /cliente');
+                        }
+                    }
+                } else {
                     Usuario::setAlerta('error', 'Usuario no encontrado');
                 }
+
             }
-
         }
-        $alertas = Usuario::getAlertas();
 
-        $router->render('auth/login',[
+        $alertas = Usuario::getAlertas();
+        
+        $router->render('auth/login', [
             'alertas' => $alertas
         ]);
     }
 
+    public static function admin() {
+        echo 'Desde admin';
+    }
 
-
+    public static function cliente() {
+        echo 'Desde cliente';
+    }
 
     public static function logout() {
         echo 'Desde logout';
     }
+
+
     public static function olvide(Router $router) {
         //echo 'Desde olvide';
         $alertas = [];
