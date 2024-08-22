@@ -47,7 +47,6 @@ class Email {
         $contenido .= "'>Confirmar Cuenta</a>";
         $contenido .= "<p>Si tú no creaste esta cuenta, puedes ignorar el mensaje.</p>";
         $contenido .= '</html>';
-        debuguear($contenido);
         $mail->Body = $contenido;
 
         //Enviar el mail

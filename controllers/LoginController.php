@@ -190,7 +190,7 @@ class LoginController {
                    
                     //Crear el usuario 
                     $resultado = $usuario->guardar();
-                    //debuguear($resultado);
+                    debuguear($resultado);
                     //debuguear($usuario);
 
                     if($resultado) {
