@@ -16,43 +16,42 @@ class Email {
         $this->token = $token;
     }
         
-    public function enviarConfirmacion() {
+    public function enviarConfirmacion()
+    {
+        // create a new object
+        $mail = new PHPMailer();
+        $mail->isSMTP();
+        $mail->Host = $_ENV['EMAIL_HOST'];
+        $mail->SMTPAuth = true;
+        $mail->Port = $_ENV['EMAIL_PORT'];
+        $mail->Username = $_ENV['EMAIL_USER'];
+        $mail->Password = $_ENV['EMAIL_PASS'];
 
-       // create a new object
-       $mail = new PHPMailer();
-       $mail->isSMTP();
-       $mail->Host = $_ENV['EMAIL_HOST'];
-       $mail->SMTPAuth = true;
-       $mail->Port = $_ENV['EMAIL_PORT'];
-       $mail->Username = $_ENV['EMAIL_USER'];
-       $mail->Password = $_ENV['EMAIL_PASS'];
+        $mail->setFrom('cuentas@misitio.com');
+        $mail->addAddress($this->email, $this->nombre);
+        $mail->Subject = 'Confirma tu cuenta';
 
-       $mail->setFrom('cuentas@misitio.com');
-       $mail->addAddress($this->email, $this->nombre);
-       $mail->Subject = 'Confirma tu cuenta';
+        // Set HTML
+        $mail->isHTML(TRUE);
+        $mail->CharSet = 'UTF-8';
 
-       // Set HTML
-       $mail->isHTML(TRUE);
-       $mail->CharSet = 'UTF-8';
+        $contenido = '<html>';
+        $contenido .= "<p>Hola ";
+        $contenido .= "<strong>" . $this->nombre .  "</strong>";
+        $contenido .= " has registrado correctamente tu cuenta en ";
+        $contenido .= "[Nombre del Sitio Web]";
+        $contenido .= ". Solo debes confirmarla usando el siguiente enlace.</p>";
+        $contenido .= "<p>Presiona aquí: ";
+        $contenido .= "<a href='" . $_ENV['APP_URL'] . "/confirmar-cuenta?token=";
+        $contenido .= $this->token;
+        $contenido .= "'>Confirmar Cuenta</a>";
+        $contenido .= "<p>Si tú no creaste esta cuenta, puedes ignorar el mensaje.</p>";
+        $contenido .= '</html>';
+        $mail->Body = $contenido;
 
-       $contenido = '<html>';
-       $contenido .= "<p>Hola ";
-       $contenido .= "<strong>" . $this->nombre .  "</strong>";
-       $contenido .= " has registrado correctamente tu cuenta en ";
-       $contenido .= "[Nombre del Sitio Web]";
-       $contenido .= ". Solo debes confirmarla usando el siguiente enlace.</p>";
-       $contenido .= "<p>Presiona aquí: ";
-       $contenido .= "<a href='" . $_ENV['APP_URL'] . "/confirmar-cuenta?token=";
-       $contenido .= $this->token;
-       $contenido .= "'>Confirmar Cuenta</a>";
-       $contenido .= "<p>Si tú no creaste esta cuenta, puedes ignorar el mensaje.</p>";
-       $contenido .= '</html>';
-       $mail->Body = $contenido;
-
-       //Enviar el mail
-       $mail->send();
-
-   }
+        //Enviar el mail
+        $mail->send();
+    }
 
    public function enviarInstrucciones() {
          // create a new object

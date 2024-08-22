@@ -187,7 +187,7 @@ class LoginController {
                     $email = new Email($usuario->email, $usuario->nombre, $usuario->token);
                     //debuguear($email);
                     $email->enviarConfirmacion();
-
+                   
                     //Crear el usuario 
                     $resultado = $usuario->guardar();
                     debuguear($resultado);
