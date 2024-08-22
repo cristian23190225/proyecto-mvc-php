@@ -180,6 +180,8 @@ class LoginController {
 
                     //Geberar un Token unico
                     $usuario->crearToken();
+
+                    debuguear($usuario);
                     
                     //Enviar el imal
                     $email = new Email($usuario->email, $usuario->nombre, $usuario->token);
